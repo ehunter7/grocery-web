@@ -1,0 +1,29 @@
+{
+  "name": "grocery",
+  "version": "1.0.0",
+  "description": "Grocery-web",
+  "main": "server.ts",
+  "scripts": {
+    "start": "if-env NODE_ENV=production && npm run start:prod || npm run start:dev",
+    "start:prod": "node server.ts",
+    "start:dev": "concurrently \"nodemon --ignore 'client/*'\" \"npm run client\"",
+    "client": "cd client && npm run start",
+    "seed": "node scripts/seedDB.js",
+    "install": "cd client && npm install",
+    "build": "cd client && npm run build",
+    "heroku-postbuild": "npm run build"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/express": "^4.17.13",
+    "@types/node": "^17.0.40",
+    "concurrently": "^4.1.0",
+    "express": "^4.18.1",
+    "nodemon": "^1.18.7",
+    "typescript": "^4.7.3"
+  },
+  "dependencies": {
+    "if-env": "^1.0.4"
+  }
+}
