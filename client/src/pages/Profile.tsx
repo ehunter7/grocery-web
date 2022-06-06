@@ -1,7 +1,8 @@
-import { Fragment } from "react";
+import { Fragment, useEffect } from "react";
 import { Menu, Popover, Transition } from "@headlessui/react";
 import { BellIcon, MenuIcon, XIcon } from "@heroicons/react/outline";
 import { SearchIcon } from "@heroicons/react/solid";
+import API from "../utils/api";
 
 const user = {
   name: "Tom Cook",
@@ -29,6 +30,28 @@ function classNames(...classes: any) {
 }
 
 export default function Example() {
+  useEffect(() => {
+    loadRecipes();
+  }, []);
+
+  const loadRecipes = async () => {
+    let user: any;
+    await API.getUser().then((res) => (user = res.data));
+    console.log("user", user.uid);
+    await API.getFamily(user.uid).then((res) => console.log(res));
+    // if (familyName === "") {
+    //   familyName = user.email;
+    //   console.log("emptyx", user.email);
+    // }
+    // const mUser = {
+    //   ...authContext.user,
+    //   family: familyName,
+    // };
+    // authContext.setUser(mUser);
+    // const results = await API.getRecipes(familyName);
+    // // // console.log('---------------', results[0].heading.description)
+    // setRecipes(results);
+  };
   return (
     <>
       <div className="min-h-full">
