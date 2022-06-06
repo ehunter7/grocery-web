@@ -3,9 +3,9 @@ import { useNavigate } from "react-router-dom";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
 import { useState } from "react";
-
+import API from "../utils/api";
 export default function Example() {
-  //   let navigate = useNavigate();
+  let navigate = useNavigate();
   const [showRegistrationField, setShowRegistrationField] = useState({
     password: false,
     name: false,
@@ -14,7 +14,10 @@ export default function Example() {
   const validationSchema = Yup.object().shape({
     email: Yup.string().required().email().label("Email"),
     showRegistration: Yup.boolean(),
-    name: Yup.string().required().min(2).label("Name"),
+    name: Yup.string().when("showRegistration", {
+      is: true,
+      then: Yup.string().required().min(6).label("Confirmation Password"),
+    }),
     password: Yup.string().required().min(6).label("Password"),
     passwordConfirm: Yup.string().when("showRegistration", {
       is: true,
@@ -22,10 +25,15 @@ export default function Example() {
     }),
   });
 
-  const handleLogin = async (userValues: any) => {
-    console.log(userValues);
-    // navigate("/profile");
+  const handleSubmit = async (userValues: any) => {
+    if (showRegistrationField.password) {
+      API.register(userValues).then((res) => console.log(res));
+    } else {
+      await API.login(userValues).then((res) => console.log(res));
+    }
+    navigate("/profile");
   };
+
   return (
     <>
       <Formik
@@ -36,7 +44,7 @@ export default function Example() {
           password: "",
           passwordConfirm: "",
         }}
-        onSubmit={(userValues) => handleLogin(userValues)}
+        onSubmit={(userValues) => handleSubmit(userValues)}
         validationSchema={validationSchema}
       >
         {({
@@ -220,7 +228,7 @@ export default function Example() {
                   <div>
                     {!values.showRegistration ? (
                       <button
-                        type="button"
+                        type="submit"
                         className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                       >
                         <span className="absolute left-0 inset-y-0 flex items-center pl-3">
@@ -247,7 +255,7 @@ export default function Example() {
                             });
                           }
                         }}
-                        type="button"
+                        type="submit"
                         className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                       >
                         <span className="absolute left-0 inset-y-0 flex items-center pl-3">
